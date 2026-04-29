@@ -345,15 +345,45 @@ fbq('track', 'PageView');
 <!-- Axen tracking helpers (pré-definidos antes do JS da página) -->
 <script>
   window.AXEN_ORIGEM = 'desenvolvimento';
+  window.AXEN_CAPI_URL = 'https://n8n.srv1288863.hstgr.cloud/webhook/meta-capi';
   window.AXEN_EVENTS = {
     view:   'landing_view_desenvolvimento',
     cta:    'landing_cta_click_desenvolvimento',
     submit: 'landing_form_submit_desenvolvimento'
   };
+  function axenUuid(){
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){
+      var r = Math.random()*16|0; return (c=='x'?r:(r&0x3|0x8)).toString(16);
+    });
+  }
+  function axenCookie(name){
+    var m = document.cookie.match(new RegExp('(?:^|;\\s*)'+name+'=([^;]+)'));
+    return m ? decodeURIComponent(m[1]) : undefined;
+  }
   window.trackEvent = function(name, params) {
-    var data = Object.assign({ landing: window.AXEN_ORIGEM }, params || {});
-    if (window.fbq)  window.fbq('trackCustom', name, data);
-    if (window.gtag) window.gtag('event', name, data);
+    var eventID = axenUuid();
+    var custom = Object.assign({ landing: window.AXEN_ORIGEM }, params || {});
+    // Client-side: Pixel (com eventID p/ dedup) + GA4/Ads
+    if (window.fbq)  window.fbq('trackCustom', name, custom, { eventID: eventID });
+    if (window.gtag) window.gtag('event', name, custom);
+    // Server-side: Meta CAPI via n8n
+    try {
+      var capi = Object.assign({
+        event_name: name,
+        event_id: eventID,
+        landing: window.AXEN_ORIGEM,
+        url: window.location.href,
+        user_agent: navigator.userAgent,
+        fbp: axenCookie('_fbp'),
+        fbc: axenCookie('_fbc')
+      }, params || {});
+      fetch(window.AXEN_CAPI_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(capi),
+        keepalive: true
+      }).catch(function(){});
+    } catch(e) {}
   };
   window.addEventListener('DOMContentLoaded', function(){
     window.trackEvent(window.AXEN_EVENTS.view);
@@ -766,7 +796,6 @@ renderInlineIcons();
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (window.trackEvent) window.trackEvent(window.AXEN_EVENTS.submit);
 
     const formData = new FormData(form);
     const payload = {
@@ -781,6 +810,13 @@ renderInlineIcons();
       alert('Por favor, preencha todos os campos.');
       return;
     }
+
+    if (window.trackEvent) window.trackEvent(window.AXEN_EVENTS.submit, {
+      nome: payload.nome,
+      estabelecimento: payload.estabelecimento,
+      email: payload.email,
+      whatsapp: payload.whatsapp
+    });
 
     btnEnviar.disabled = true;
     btnEnviar.innerHTML = 'Enviando...';
