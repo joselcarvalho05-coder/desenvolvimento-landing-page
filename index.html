@@ -359,6 +359,7 @@ body {
         <p class="form-sub">Preencha abaixo e receba o contato do nosso time em até 5 minutos.</p>
         <div class="form">
           <div class="field"><label>Seu nome</label><input required type="text" name="nome" placeholder="Nome completo"></div>
+          <div class="field"><label>Estabelecimento</label><input required type="text" name="estabelecimento" placeholder="Nome da sua empresa"></div>
           <div class="field"><label>WhatsApp</label><input required type="tel" name="whatsapp" placeholder="(00) 00000-0000"></div>
           <div class="field"><label>Seu melhor e-mail</label><input required type="email" name="email" placeholder="voce@empresa.com.br"></div>
           <button class="submit" type="submit">Enviar <i data-lucide="arrow-right" style="width:16px;height:16px"></i></button>
@@ -725,12 +726,13 @@ renderInlineIcons();
     const formData = new FormData(form);
     const payload = {
       nome: formData.get('nome'),
+      estabelecimento: formData.get('estabelecimento'),
       whatsapp: formData.get('whatsapp'),
       email: formData.get('email'),
       origem: ORIGEM
     };
 
-    if (!payload.nome || !payload.whatsapp || !payload.email) {
+    if (!payload.nome || !payload.estabelecimento || !payload.whatsapp || !payload.email) {
       alert('Por favor, preencha todos os campos.');
       return;
     }
