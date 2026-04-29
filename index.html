@@ -316,6 +316,49 @@ body {
 .reveal { animation: revealFallback 0s linear 2s forwards; }
 .reveal.in { animation: none; }
 </style>
+
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '907023405504021');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=907023405504021&ev=PageView&noscript=1"/></noscript>
+
+<!-- Google tag (gtag.js) — GA4 + Google Ads -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ED1E85M4JZ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ED1E85M4JZ');
+  gtag('config', 'AW-18049514747');
+</script>
+
+<!-- Axen tracking helpers (pré-definidos antes do JS da página) -->
+<script>
+  window.AXEN_ORIGEM = 'desenvolvimento';
+  window.AXEN_EVENTS = {
+    view:   'landing_view_desenvolvimento',
+    cta:    'landing_cta_click_desenvolvimento',
+    submit: 'landing_form_submit_desenvolvimento'
+  };
+  window.trackEvent = function(name, params) {
+    var data = Object.assign({ landing: window.AXEN_ORIGEM }, params || {});
+    if (window.fbq)  window.fbq('trackCustom', name, data);
+    if (window.gtag) window.gtag('event', name, data);
+  };
+  window.addEventListener('DOMContentLoaded', function(){
+    window.trackEvent(window.AXEN_EVENTS.view);
+  });
+</script>
 </head>
 <body>
 
@@ -643,6 +686,7 @@ renderInlineIcons();
   function safeCreateIcons() { renderInlineIcons(); }
 
   function scrollToForm(){
+    if (window.trackEvent) window.trackEvent(window.AXEN_EVENTS.cta);
     const f = document.getElementById('lead-form');
     f.scrollIntoView({behavior:'smooth',block:'center'});
     setTimeout(() => {
@@ -722,6 +766,7 @@ renderInlineIcons();
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (window.trackEvent) window.trackEvent(window.AXEN_EVENTS.submit);
 
     const formData = new FormData(form);
     const payload = {
