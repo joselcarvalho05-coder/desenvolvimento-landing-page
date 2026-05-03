@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Camada_1" data-name="Camada 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #f2f2f2;
+      }
+    </style>
+  </defs>
+  <rect y=".09" width="1080" height="1080"/>
+  <g>
+    <polygon class="cls-1" points="327.52 663.6 327.52 445.15 439.2 333.61 752.43 333.61 669.35 416.58 410.65 416.58 410.65 663.6 327.52 663.6"/>
+    <polygon class="cls-1" points="327.57 746.57 410.65 663.6 669.35 663.6 669.35 416.58 752.48 416.58 752.48 635.05 640.8 746.57 327.57 746.57"/>
+  </g>
+</svg>
